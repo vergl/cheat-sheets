@@ -3,25 +3,21 @@
 ## Main commands
 
 ### Initialize Terraform
-
 ```bash
 terraform init
 ```
 
 ### Test configuration
-
 ```bash
 terraform plan
 ```
 
 ### Run configuration (create VMs)
-
 ```bash
 terraform apply
 ```
 
 ### Remove configuration (destroy VMs)
-
 ```bash
 terraform destroy
 ```
