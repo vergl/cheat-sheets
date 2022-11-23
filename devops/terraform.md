@@ -1,5 +1,15 @@
 # Terraform
 
+## Prerequisites
+### Install Terraform CLI
+Documentation: [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+
+Installation on MacOS with *brew*:
+```bash
+brew tap hashicorp/tap
+brew install hashicorp/tap/terraform
+```
+
 ## Main commands
 
 ### Initialize Terraform

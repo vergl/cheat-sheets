@@ -1,5 +1,14 @@
 # Packer
 
+## Prerequisites
+### Install Packer CLI
+Documentation: [Install Packer](https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli)
+
+Installation on MacOS with *brew*:
+```bash
+brew tap hashicorp/tap
+brew install hashicorp/tap/packer
+```
 ## Main commands
 
 ### Vadidate configuration
