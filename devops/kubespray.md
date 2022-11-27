@@ -3,13 +3,13 @@ Kubespray is a composition of Ansible playbooks, inventory, provisioning tools, 
 
 ## Prerequisites
 
-Python 3 and pip3 should be installed.
+[Python 3](https://www.python.org/downloads/), [pip3](https://pip.pypa.io/en/stable/) and [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) should be installed.
 ```bash
 sudo apt install python3 python3-pip ansible
 ```
 
 ### Generate SSH key and install it to nodes
-First, we need to generate SSH key (if they not generated yet). All default values on prompt should be fine in our case
+First, we need to generate SSH keys (if they are not generated yet). All default values on prompt should be fine in our case
 ```bash
 ssh-keygen
 ```
