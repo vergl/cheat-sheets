@@ -1,4 +1,5 @@
 # Packer
+Packer is a free and open source tool for creating golden images for multiple platforms from a single source configuration.
 
 ## Prerequisites
 ### Install Packer CLI
@@ -26,6 +27,7 @@ packer build .
 - *-on-error=ask* - Prevent auto-terminating and asks for manual action
 - *-debug* - Asks 'Press enter to continue' on each atomic operation
 - *PACKER_LOG=1 PACKER_LOG_PATH=filename ...* - enable logging
+- *mkpasswd --method=SHA-512 --rounds=4096* - command to generate password's hash which is used in *user-data*. Vanilla Ubuntu does not have command *mkpasswd* installed so you have to install package whois beforehand (*mkpasswd* is a part of *whois*)
 
 ## Problems I faced
 

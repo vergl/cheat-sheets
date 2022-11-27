@@ -1,4 +1,5 @@
 # Terraform
+Terraform is an open-source infrastructure as code software tool that enables you to safely and predictably create, change, and improve infrastructure.
 
 ## Prerequisites
 ### Install Terraform CLI
@@ -27,15 +28,22 @@ terraform plan
 terraform apply
 ```
 
+
+### Run specific configuration (create VMs)
+```bash
+terraform apply -target=resource_type.resource_name
+```
+
 ### Remove configuration (destroy VMs)
 ```bash
 terraform destroy
 ```
 
 ## Useful options
-- *--auto-approve* - disables prompt for approve
-- *TF_REATTACH_PROVIDERS* - environment variable for debugging providers. Value for the variable is generated 
+- *--auto-approve* - Disables prompt for approve
+- *TF_REATTACH_PROVIDERS* - Environment variable for debugging providers. Value for the variable is generated 
 by the provider library when run in debug mode
+- *-parallelism=n* - Limit the number of concurrent operation as Terraform walks the graph.
 
 ## Problems I faced
 
@@ -47,6 +55,8 @@ Also it's a good idea to check VMs state after such errors because they don't ge
 you have to do it manually. 
 
 Unfortunately, this problem is quite common and makes using Terraform less convenient as it was supposed to be.
+
+*Workaround:* set `-parallelism=1` to decrease the chance of locks and other problems.
 
 ### VMs don't get IP address from cloud-init configuration
 There is a [Github Issue](https://github.com/Telmate/terraform-provider-proxmox/issues/603) about it. After debugging
