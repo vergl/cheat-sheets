@@ -252,3 +252,104 @@ kube-system   nodelocaldns-whjlm                1/1     Running   1 (8m39s ago) 
 ```
 
 That's it, the cluster is ready to use, now we can install everything we need.
+
+## Working with existing Kubernetes cluster
+To upgrade Kubernetes cluster (upgrate to a newer version, add new node, etc) we can update values in our `inventory/myk8s` directory and run `ansible-playbook` again. It will check these files and update the cluster according to the changes.
+
+### Enabling Kubernetes dashboard
+To enable [Kubernetes Dashboard](https://github.com/kubernetes/dashboard) we need to change the value in file `inventory/myk8s/group_vars/k8s_cluster/addons.yml` from
+```bash
+# dashboard_enabled: false
+```
+to
+```bash
+dashboard_enabled: true
+```
+
+and run `ansible-playbook` with this command (the last parameter is pointing to a `upgrade-cluster.yaml` file)
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root upgrade-cluster.yml
+```
+
+### Adding more worker nodes to cluster
+To add more nodes to cluster we can manually add them to `inventory/myk8s/hosts.yaml` file. Let's add two more worker nodes:
+```yaml
+all:
+  hosts:
+    master1:
+      ansible_host: 192.168.0.131
+      ip: 192.168.0.131
+      access_ip: 192.168.0.131
+    master2:
+      ansible_host: 192.168.0.132
+      ip: 192.168.0.132
+      access_ip: 192.168.0.132
+    master3:
+      ansible_host: 192.168.0.133
+      ip: 192.168.0.133
+      access_ip: 192.168.0.133
+    worker1:
+      ansible_host: 192.168.0.141
+      ip: 192.168.0.141
+      access_ip: 192.168.0.141
+    worker2:
+      ansible_host: 192.168.0.142
+      ip: 192.168.0.142
+      access_ip: 192.168.0.142
+    worker3:
+      ansible_host: 192.168.0.143
+      ip: 192.168.0.143
+      access_ip: 192.168.0.143
+    worker4:
+      ansible_host: 192.168.0.144
+      ip: 192.168.0.144
+      access_ip: 192.168.0.144
+    worker5:
+      ansible_host: 192.168.0.145
+      ip: 192.168.0.145
+      access_ip: 192.168.0.145
+  children:
+    kube_control_plane:
+      hosts:
+        master1:
+        master2:
+        master3:
+    kube_node:
+      hosts:
+        worker1:
+        worker2:
+        worker3:
+        worker4:
+        worker5:
+    etcd:
+      hosts:
+        master1:
+        master2:
+        master3:
+    k8s_cluster:
+      children:
+        kube_control_plane:
+        kube_node:
+    calico_rr:
+      hosts: {}
+```
+
+The command to add more nodes should look like this:
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root scale.yml
+```
+
+### Removing node from cluster
+To remove node from the cluster we have to run `ansible-playbook` **BEFORE** editing `inventory/myk8s/hosts.yaml`. Let's remove our *worker4* and *worker5* nodes.
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root remove-node.yml --extra-vars "node=worker4,worker5" 
+```
+
+Now we can remove them from `inventory/myk8s/hosts.yaml` file.
+
+### Destroying Kubernetes cluster
+To destroy existing Kubernetes cluster let's just run `reset.yml`
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root reset.yml
+```
+and it will completely reset all the nodes.
