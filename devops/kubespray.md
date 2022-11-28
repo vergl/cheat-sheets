@@ -253,7 +253,7 @@ kube-system   nodelocaldns-whjlm                1/1     Running   1 (8m39s ago) 
 
 That's it, the cluster is ready to use, now we can install everything we need.
 
-## Upgrading Kubernetes cluster
+## Working with existing Kubernetes cluster
 To upgrade Kubernetes cluster (upgrate to a newer version, add new node, etc) we can update values in our `inventory/myk8s` directory and run `ansible-playbook` again. It will check these files and update the cluster according to the changes.
 
 ### Enabling Kubernetes dashboard
@@ -264,6 +264,11 @@ To enable [Kubernetes Dashboard](https://github.com/kubernetes/dashboard) we nee
 to
 ```bash
 dashboard_enabled: true
+```
+
+and run `ansible-playbook` with this command (the last parameter is pointing to a `upgrade-cluster.yaml` file)
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root upgrade-cluster.yml
 ```
 
 ### Adding more worker nodes to cluster
@@ -328,3 +333,23 @@ all:
     calico_rr:
       hosts: {}
 ```
+
+The command to add more nodes should look like this:
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root scale.yml
+```
+
+### Removing node from cluster
+To remove node from the cluster we have to run `ansible-playbook` **BEFORE** editing `inventory/myk8s/hosts.yaml`. Let's remove our *worker4* and *worker5* nodes.
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root remove-node.yml --extra-vars "node=worker4,worker5" 
+```
+
+Now we can remove them from `inventory/myk8s/hosts.yaml` file.
+
+### Destroying Kubernetes cluster
+To destroy existing Kubernetes cluster let's just run `reset.yml`
+```bash
+ansible-playbook -i inventory/myk8s/hosts.yaml  --become --become-user=root reset.yml
+```
+and it will completely reset all the nodes.
