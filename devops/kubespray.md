@@ -252,3 +252,79 @@ kube-system   nodelocaldns-whjlm                1/1     Running   1 (8m39s ago) 
 ```
 
 That's it, the cluster is ready to use, now we can install everything we need.
+
+## Upgrading Kubernetes cluster
+To upgrade Kubernetes cluster (upgrate to a newer version, add new node, etc) we can update values in our `inventory/myk8s` directory and run `ansible-playbook` again. It will check these files and update the cluster according to the changes.
+
+### Enabling Kubernetes dashboard
+To enable [Kubernetes Dashboard](https://github.com/kubernetes/dashboard) we need to change the value in file `inventory/myk8s/group_vars/k8s_cluster/addons.yml` from
+```bash
+# dashboard_enabled: false
+```
+to
+```bash
+dashboard_enabled: true
+```
+
+### Adding more worker nodes to cluster
+To add more nodes to cluster we can manually add them to `inventory/myk8s/hosts.yaml` file. Let's add two more worker nodes:
+```yaml
+all:
+  hosts:
+    master1:
+      ansible_host: 192.168.0.131
+      ip: 192.168.0.131
+      access_ip: 192.168.0.131
+    master2:
+      ansible_host: 192.168.0.132
+      ip: 192.168.0.132
+      access_ip: 192.168.0.132
+    master3:
+      ansible_host: 192.168.0.133
+      ip: 192.168.0.133
+      access_ip: 192.168.0.133
+    worker1:
+      ansible_host: 192.168.0.141
+      ip: 192.168.0.141
+      access_ip: 192.168.0.141
+    worker2:
+      ansible_host: 192.168.0.142
+      ip: 192.168.0.142
+      access_ip: 192.168.0.142
+    worker3:
+      ansible_host: 192.168.0.143
+      ip: 192.168.0.143
+      access_ip: 192.168.0.143
+    worker4:
+      ansible_host: 192.168.0.144
+      ip: 192.168.0.144
+      access_ip: 192.168.0.144
+    worker5:
+      ansible_host: 192.168.0.145
+      ip: 192.168.0.145
+      access_ip: 192.168.0.145
+  children:
+    kube_control_plane:
+      hosts:
+        master1:
+        master2:
+        master3:
+    kube_node:
+      hosts:
+        worker1:
+        worker2:
+        worker3:
+        worker4:
+        worker5:
+    etcd:
+      hosts:
+        master1:
+        master2:
+        master3:
+    k8s_cluster:
+      children:
+        kube_control_plane:
+        kube_node:
+    calico_rr:
+      hosts: {}
+```
