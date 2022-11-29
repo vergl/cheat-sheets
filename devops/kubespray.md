@@ -256,7 +256,7 @@ That's it, the cluster is ready to use, now we can install everything we need.
 ## Working with existing Kubernetes cluster
 To upgrade Kubernetes cluster (upgrate to a newer version, add new node, etc) we can update values in our `inventory/myk8s` directory and run `ansible-playbook` again. It will check these files and update the cluster according to the changes.
 
-### Enabling Kubernetes dashboard
+### Configuring Kubernetes cluster
 To enable [Kubernetes Dashboard](https://github.com/kubernetes/dashboard) we need to change the value in file `inventory/myk8s/group_vars/k8s_cluster/addons.yml` from
 ```bash
 # dashboard_enabled: false
@@ -264,6 +264,13 @@ To enable [Kubernetes Dashboard](https://github.com/kubernetes/dashboard) we nee
 to
 ```bash
 dashboard_enabled: true
+```
+
+Also, let's enable Local [Volume Provisioner](https://github.com/kubernetes-sigs/kubespray/blob/master/docs/kubernetes-apps/local_volume_provisioner.md) and [Cert Manager](https://cert-manager.io/)
+```bash
+local_volume_provisioner_enabled: true
+...
+cert_manager_enabled: true
 ```
 
 and run `ansible-playbook` with this command (the last parameter is pointing to a `upgrade-cluster.yaml` file)
